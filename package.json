@@ -6,7 +6,7 @@
   "version": "1.0.0",
   "type": "module",
   "main": "electron/main.cjs",
-  "homepage": "https://naygracioliarco.github.io/ficha-atividade-main/",
+  "homepage": "https://naygracioliarco.github.io/ficha-atividade-AF/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
