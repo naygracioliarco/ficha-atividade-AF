@@ -1,0 +1,73 @@
+{
+  "name": "livro-bett",
+  "description": "Livro digital BETT (web + executável offline)",
+  "author": "naygracioliarco",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "homepage": "https://naygracioliarco.github.io/ficha-atividade-main/",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:electron": "cross-env ELECTRON_BUILD=true vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "electron:pack": "npm run build:electron && electron-builder --win portable"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.4",
+    "lucide-react": "^0.344.0",
+    "phaser": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "@eslint/js": "^9.9.1",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^9.9.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.11",
+    "gh-pages": "^6.3.0",
+    "globals": "^15.9.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.3.0",
+    "vite": "^5.4.2"
+  },
+  "build": {
+    "appId": "io.github.naygracioliarco.livrobett",
+    "productName": "Livro Digital BETT",
+    "copyright": "Copyright 2026",
+    "directories": {
+      "output": "release-portable"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/main.cjs",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "LivroDigitalBETT-portable.exe"
+    }
+  }
+}
