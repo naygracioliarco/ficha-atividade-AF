@@ -1,61 +1,69 @@
-# Livro Digital - LD_BETT
+# Ficha de Atividades — 6º ano
 
-Aplicação web interativa em React + TypeScript para conteúdos didáticos com leitura guiada, atividades e visão do professor.
+Aplicação web interativa (React + TypeScript) com fichas digitais de **Língua Portuguesa** e **Matemática** para o 6º ano · Volume 1 · Capítulo 1.
 
-## Visão Geral
+## Visão geral
 
-O projeto renderiza um livro digital com:
+O app renderiza uma ficha digital em páginas scrolláveis com:
 
-- conteúdo textual e visual por páginas;
-- questões interativas com persistência local;
-- botão de apoio pedagógico para professor;
-- componentes de avaliação formativa.
+- textos de leitura (notícias, cartaz) e questões de interpretação;
+- atividades de gramática (substantivos);
+- atividades de matemática (sistemas de numeração, ordens, reta numérica, ábaco interativo etc.);
+- respostas salvas no `localStorage`;
+- botão **Para o professor** com códigos BNCC e gabarito;
+- download das respostas em PDF.
+
+## Conteúdo
+
+| Seção | Páginas | Temas |
+|-------|---------|--------|
+| **1. Língua Portuguesa** | 1–4 | Notícia do pliossauro, aquecimento global (Prova Brasil), cartaz da Campanha do Agasalho, classificação de substantivos |
+| **2. Matemática** | 5–8 | Egípcio/maia/romano, sistema decimal, formação de números, comparação, planetas, ábaco |
 
 ## Stack
 
-- React 18
-- TypeScript
+- React 18 + TypeScript
 - Vite
 - Tailwind CSS
-- localStorage (persistência de respostas e estado de leitura)
+- localStorage (respostas e posição de scroll)
+- jsPDF (exportação de respostas)
 
-## Execução Local
+## Execução local
 
 ```bash
 npm install
 npm run dev
 ```
 
-Aplicação em modo desenvolvimento via Vite.
-
 ## Scripts
 
 ```bash
-npm run dev        # desenvolvimento
-npm run build      # build de produção
-npm run preview    # pré-visualização do build
-npm run lint       # lint
-npm run typecheck  # checagem de tipos TypeScript
-npm run deploy     # deploy do dist para gh-pages
+npm run dev             # desenvolvimento (Vite)
+npm run build           # build de produção
+npm run preview         # pré-visualização do build
+npm run lint            # ESLint
+npm run typecheck       # checagem de tipos
+npm run deploy          # deploy do dist (gh-pages)
+npm run electron:pack   # executável Windows portátil
 ```
 
-## Estrutura Principal
+## Estrutura principal
 
 ```text
 src/
   components/
-    Book.tsx
+    Book.tsx                 # layout das páginas (Português + Matemática)
+    Header.tsx               # capa Língua Portuguesa
+    MathHeader.tsx           # capa Matemática
+    math/MathWidgets.tsx     # tabelas, ábaco, reta, símbolos maias etc.
     QuestionRenderer.tsx
-    QuestionTextInput.tsx
-    QuestionTextInputWithEmbedded.tsx
-    QuestionTableFill.tsx
-    QuestionFillBlanks.tsx
-    QuestionOrdering.tsx
-    CriteriosAvaliacao.tsx
+    Question*.tsx            # tipos de questão
     TeacherButton.tsx
     TeacherAnswers.tsx
+    DownloadQuestionsButton.tsx
   data/
-    questions.ts
+    questions.ts             # questões de Português + exports combinados
+    mathQuestions.ts         # questões / gabarito de Matemática
   hooks/
     useUserAnswers.ts
     usePagination.ts
@@ -63,68 +71,41 @@ src/
   types/
     questions.ts
   utils/
-    questionHelpers.tsx
+    storage.ts
 ```
 
-## Modelo de Questões
+## Dados das questões
 
-As questões ficam em `src/data/questions.ts` e seguem os tipos definidos em `src/types/questions.ts`.
+- **Português:** `src/data/questions.ts` (`chapterQuestions.page1`–`page4`)
+- **Matemática:** `src/data/mathQuestions.ts` (`mathChapterQuestions.page5`–`page8`)
+- **Todas juntas:** `allBookQuestions` / `chapterQuestionsAll` em `questions.ts`
 
-Tipos atualmente suportados:
+Tipos comuns: `multiple-choice`, `true-false`, `text-input`, `table-fill`, entre outros definidos em `src/types/questions.ts`.
 
-- `multiple-choice`
-- `true-false`
-- `alternative`
-- `text-input`
-- `table-fill`
-- `fill-blanks`
-- `ordering`
+Atividades especiais de matemática (ábaco clicável, tabela maia/romana, reta numérica) ficam em `MathWidgets.tsx`, com gabarito resumido em `mathQuestions.ts` para a visão do professor.
 
-### Exemplo base
+## Persistência
 
-```ts
-{
-  id: 'ch1_q1',
-  type: 'text-input',
-  question: '...',
-  placeholder: 'Digite aqui...',
-}
-```
+`useUserAnswers` grava respostas em `localStorage` (chave `book_answers_port_6ano_v1`).
 
-## Renderização de Questões
+## Visão do professor
 
-O `QuestionRenderer` seleciona o componente certo por `question.type`.
+- `TeacherButton` abre o painel por página.
+- `TeacherAnswers` exibe o gabarito conforme o tipo da questão.
 
-Fluxo simplificado:
+## Ábaco interativo
 
-1. `Book.tsx` obtém questão por `id`.
-2. Passa para `QuestionRenderer`.
-3. `QuestionRenderer` renderiza o componente específico.
-4. Mudanças de resposta são propagadas via `onAnswerChange`.
+Nas questões **7b** e **7c** de Matemática:
 
-## Persistência de Respostas
+- clique na haste/rótulo (Cm, Dm, Um, C, D, U) → adiciona 1 conta (máx. 9);
+- botão direito → remove 1 conta;
+- o campo numérico é preenchido automaticamente.
 
-`useUserAnswers` centraliza o estado de respostas e mantém os dados entre recarregamentos usando armazenamento local.
+## Observações de manutenção
 
-## Visão do Professor
-
-- `TeacherButton` abre o conteúdo pedagógico.
-- `TeacherAnswers` usa `renderQuestionAnswer` (`src/utils/questionHelpers.tsx`) para montar gabaritos por tipo de questão.
-
-## Estilo e Tema
-
-- Estilos globais em `src/index.css`.
-- Fontes e famílias tipográficas configuradas entre CSS global e classes utilitárias.
-- Componentes de questão usam classes padronizadas para campos de entrada (placeholder, borda, altura e tipografia).
-
-## Observações de Manutenção
-
-- Prefira adicionar/alterar questões por `id`, evitando dependência de índice.
-- Ao criar novos tipos de questão:
-  1. definir tipo em `src/types/questions.ts`;
-  2. criar componente em `src/components`;
-  3. integrar no `QuestionRenderer`;
-  4. ajustar `renderQuestionAnswer` para visão do professor.
+- Prefira alterar conteúdo por `id` da questão.
+- Novo tipo de questão: tipar em `types/questions.ts` → componente → `QuestionRenderer` → gabarito em `TeacherAnswers`.
+- Layout de página e textos estáticos: `Book.tsx` e/ou `MathWidgets.tsx`.
 
 ## Licença
 
